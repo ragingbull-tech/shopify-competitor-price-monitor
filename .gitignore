@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+
+.env
+.env.*
+
+price_monitor.db
+weekly_report.txt
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
