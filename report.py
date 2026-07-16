@@ -146,6 +146,16 @@ def build_report(changes: list[dict], current_snapshots: list[dict]) -> str:
         lines.append(f"URL: {change['url']}")
         lines.append("")
 
+    lines.append("Current Tracked Variants")
+    lines.append("-" * 24)
+
+    for item in current_snapshots:
+        stock_status = "In stock" if bool(item["in_stock"]) else "Out of stock"
+        lines.append(
+            f"{item['title']} | Competitor price: "
+            f"{item['price']:.2f} {item['currency']} | {stock_status}"
+        )
+
     return "\n".join(lines)
 
 
