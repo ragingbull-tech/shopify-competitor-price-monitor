@@ -3,6 +3,7 @@ __pycache__/
 
 .env
 .env.*
+!.env.example
 
 price_monitor.db
 weekly_report.txt
