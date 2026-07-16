@@ -5,6 +5,10 @@ REPORT_PATH = Path("weekly_report.txt")
 DEFAULT_YOUR_PRICE_MULTIPLIER = 1.12
 
 
+def snapshot_key(item: dict) -> tuple[str, str]:
+    return (item["url"], item["title"])
+
+
 def estimate_your_price(competitor_price: float) -> float:
     return round(competitor_price * DEFAULT_YOUR_PRICE_MULTIPLIER, 2)
 
@@ -32,7 +36,7 @@ def suggest_action(gap_amount: float, gap_percent: float, competitor_in_stock: b
 
 
 def build_report(changes: list[dict], current_snapshots: list[dict]) -> str:
-    current_by_url = {item["url"]: item for item in current_snapshots}
+    current_by_key = {snapshot_key(item): item for item in current_snapshots}
     stockout_count = sum(1 for item in current_snapshots if not bool(item["in_stock"]))
     undercut_count = 0
 
@@ -64,7 +68,7 @@ def build_report(changes: list[dict], current_snapshots: list[dict]) -> str:
     lines.append("-" * 17)
 
     for change in changes:
-        current_item = current_by_url.get(change["url"])
+        current_item = current_by_key.get(snapshot_key(change))
 
         if current_item is None:
             continue
@@ -99,7 +103,7 @@ def build_report(changes: list[dict], current_snapshots: list[dict]) -> str:
     lines.append("-" * 16)
 
     for change in changes:
-        current_item = current_by_url.get(change["url"])
+        current_item = current_by_key.get(snapshot_key(change))
 
         if change["type"] == "new_product":
             lines.append(f"NEW: {change['title']}")

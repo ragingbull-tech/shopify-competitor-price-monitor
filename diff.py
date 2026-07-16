@@ -1,9 +1,13 @@
+def snapshot_key(item: dict) -> tuple[str, str]:
+    return (item["url"], item["title"])
+
+
 def compare_snapshots(previous: list[dict], current: list[dict]) -> list[dict]:
-    previous_by_url = {item["url"]: item for item in previous}
+    previous_by_key = {snapshot_key(item): item for item in previous}
     changes = []
 
     for current_item in current:
-        previous_item = previous_by_url.get(current_item["url"])
+        previous_item = previous_by_key.get(snapshot_key(current_item))
 
         if previous_item is None:
             changes.append(
