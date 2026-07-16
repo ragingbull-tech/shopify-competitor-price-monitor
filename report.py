@@ -35,6 +35,19 @@ def suggest_action(gap_amount: float, gap_percent: float, competitor_in_stock: b
     return "Prices are matched. Hold price unless stock or margin changes."
 
 
+def add_tracked_variants_section(lines: list[str], current_snapshots: list[dict]) -> None:
+    lines.append("")
+    lines.append("Current Tracked Variants")
+    lines.append("-" * 24)
+
+    for item in current_snapshots:
+        stock_status = "In stock" if bool(item["in_stock"]) else "Out of stock"
+        lines.append(
+            f"{item['title']} | Competitor price: "
+            f"{item['price']:.2f} {item['currency']} | {stock_status}"
+        )
+
+
 def build_report(changes: list[dict], current_snapshots: list[dict]) -> str:
     current_by_key = {snapshot_key(item): item for item in current_snapshots}
     stockout_count = sum(1 for item in current_snapshots if not bool(item["in_stock"]))
@@ -62,6 +75,7 @@ def build_report(changes: list[dict], current_snapshots: list[dict]) -> str:
         lines.append("No price or stock changes found since the previous run.")
         lines.append("")
         lines.append("Suggested action: Hold pricing and keep monitoring.")
+        add_tracked_variants_section(lines, current_snapshots)
         return "\n".join(lines)
 
     lines.append("Executive Summary")
@@ -146,15 +160,7 @@ def build_report(changes: list[dict], current_snapshots: list[dict]) -> str:
         lines.append(f"URL: {change['url']}")
         lines.append("")
 
-    lines.append("Current Tracked Variants")
-    lines.append("-" * 24)
-
-    for item in current_snapshots:
-        stock_status = "In stock" if bool(item["in_stock"]) else "Out of stock"
-        lines.append(
-            f"{item['title']} | Competitor price: "
-            f"{item['price']:.2f} {item['currency']} | {stock_status}"
-        )
+    add_tracked_variants_section(lines, current_snapshots)
 
     return "\n".join(lines)
 
